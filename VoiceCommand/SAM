@@ -1,0 +1,60 @@
+#! /bin/sh
+# /etc/init.d/SAM
+
+### BEGIN INIT INFO
+# Provides:          voicecommand
+# Required-Start:    $local_fs $remote_fs $network $syslog
+# Required-Stop:     $local_fs $remote_fs $network $syslog
+# Default-Start:     2 3 4 5
+# Default-Stop:      0 1 6
+# Short-Description: Automatically start VoiceCommand
+# Description:       Test
+### END INIT INFO
+
+# If you want a command to always run, put it here
+killvoicecommand () {
+	sudo killall -9 voicecommand
+	sudo killall -9 arecord
+}
+# Carry out specific functions when asked to by the system
+case "$1" in
+	start)
+		echo 'Starting Automate Everything (Avy)'
+		tts 'Starting AV';
+		sudo -H -u pi voicecommand
+	;;
+	stop)
+		echo 'Stopping Automate Everything (Avy)'
+		tts 'Stopping AV';
+		killvoicecommand
+	;;
+	listen)
+		echo 'SAM is on listening mode'
+		tts "I'm listening";
+		killvoicecommand
+		sudo -H -u pi voicecommand -v0 -l1
+	;;
+	stoplisten)
+		killvoicecommand
+		## say thank you
+		tts 'Ok!';
+		## start voice command normally
+		sudo -H -u pi voicecommand
+	;;
+        listenquitely)
+                echo 'SAM is on listening quitely'
+                killvoicecommand
+                sudo -H -u pi voicecommand -v0 -l1
+        ;;
+        stopquitely)
+                killvoicecommand
+		echo 'SAM is stopping quitely'
+                ## start voice command normally
+                sudo -H -u pi voicecommand
+        ;;
+
+	*)
+		echo 'Usage: /etc/init.d/SAM {start|stop|listen|stoplisten|listenquitely|stopquitely}'
+		exit 1
+	;;
+esac
