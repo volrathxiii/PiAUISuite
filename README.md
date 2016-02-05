@@ -43,3 +43,6 @@ Copyright
 [GPLv3](https://tldrlegal.com/license/gnu-general-public-license-v3-(gpl-3))
 
 Steven Hickson
+
+## How to install Pico
+http://rpihome.blogspot.com/2015/02/installing-pico-tts.html
