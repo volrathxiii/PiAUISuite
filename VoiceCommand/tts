@@ -1,42 +1,51 @@
 #!/bin/bash
 
-#for the Raspberry Pi, we need to insert some sort of FILLER here since it cuts off the first bit of audio
+	#for the Raspberry Pi, we need to insert some sort of FILLER here since it cuts off the first bit of audio
 
 string=$@
-lang="en"
+
+#randomhash=$(cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 10 | head -n 1)
+
+#lang="en"
 if [ "$1" == "-l" ] ; then
     lang="$2"
     string=`echo "$string" | sed -r 's/^.{6}//'`
 fi
 
-#empty the original file
-echo "" > "/dev/shm/speak.mp3"
+	#empty the original file
+#echo "" > "/dev/shm/speak.mp3"
 
-len=${#string}
-while [ $len -ge 100 ] ;
-do
+#len=${#string}
+#while [ $len -ge 100 ] ;
+#do
     #lets split this up so that its a maximum of 99 characters
-    tmp=${string:0:100}
-    string=${string:100}
-    
+#    tmp=${string:0:100}
+#    string=${string:100}
     #now we need to make sure there aren't split words, let's find the last space and the string after it
-    lastspace=${tmp##* }
-    tmplen=${#lastspace}
+#    lastspace=${tmp##* }
+#    tmplen=${#lastspace}
 
     #here we are shortening the tmp string
-    tmplen=`expr 100 - $tmplen` 
-    tmp=${tmp:0:tmplen}
-    
+#    tmplen=`expr 100 - $tmplen` 
+#    tmp=${tmp:0:tmplen}
     #now we concatenate and the string is reconstructed
-    string="$lastspace$string"
-    len=${#string}
-    
+#    string="$lastspace$string"
+#    len=${#string}
     #get the first 100 characters
-    wget -q -U Mozilla -O "/dev/shm/tmp.mp3" "https://translate.google.com/translate_tts?tl=${lang}&q=$tmp&ie=UTF-8&total=1&idx=0&client=t"
-    cat "/dev/shm/tmp.mp3" >> "/dev/shm/speak.mp3"
-done
-#this will get the last remnants
-wget -q -U Mozilla -O "/dev/shm/tmp.mp3" "https://translate.google.com/translate_tts?tl=${lang}&q=$string&ie=UTF-8&total=1&idx=0&client=t"
-cat "/dev/shm/tmp.mp3" >> "/dev/shm/speak.mp3"
-#now we finally say the whole thing
-cat "/dev/shm/speak.mp3" | mpg123 - 1>>/dev/shm/voice.log 2>>/dev/shm/voice.log
+#    wget -q -U Mozilla -O "/dev/shm/tmp.mp3" "https://translate.google.com/translate_tts?tl=${lang}&q=$tmp&ie=UTF-8&total=1&idx=0&client=${randomhash}"
+#    cat "/dev/shm/tmp.mp3" >> "/dev/shm/speak.mp3"
+#    echo "https://translate.google.com/translate_tts?tl=${lang}&q=$tmp&ie=UTF-8&total=1&idx=0&client=${randomhash}"
+#done
+	#this will get the last remnants
+#wget -q -U Mozilla -O "/dev/shm/tmp.mp3" "https://translate.google.com/translate_tts?tl=${lang}&q=$string&ie=UTF-8&total=1&idx=0&client=$randomhash"
+#cat "/dev/shm/tmp.mp3" >> "/dev/shm/speak.mp3"
+#echo "https://translate.google.com/translate_tts?tl=${lang}&q=$string&ie=UTF-8&total=1&idx=0&client=$randomhash"
+	#now we finally say the whole thing
+#cat "/dev/shm/speak.mp3" | mpg123 - 1>>/dev/shm/voice.log 2>>/dev/shm/voice.log
+newstring=`echo ${string}| sed 's/^FILLER FILL//'`
+#echo $newstring
+pico2wave --lang=en-GB --wave=/tmp/voice.wav "$newstring";
+node /var/www/Avy/node/speak_on.js
+aplay -D hw:0,0 /tmp/voice.wav;
+node /var/www/Avy/node/speak_off.js
+rm -rf /tmp/voice.wav;
