@@ -1,14 +1,5 @@
-# Alternative User Interface
-
-Includes voicecommand, download, playvideo, and textcommand scripts
-
-This requires:
-
-* boost
-* curl
-* xterm
-* espeak
-* some other things
+# About This Fork
+This fork is based on StevenHickson/PiAUISuite which is awesome! I have slightly configured it to work with pico text-to-speech instead of googles. And setup a php-based voice command processor. The cool thing about having a php processor is that you can have a web based tool incase voice command fails. So be sure to checkout https://github.com/volrathxiii/Avy as well.
 
 To install the dependencies, run:
 ```bash
